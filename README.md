@@ -234,7 +234,7 @@ Berikut adalah endpoint API yang tersedia dalam proyek ini:
 
 
 
-### **Step By Step Buat Unit Test**
+# **Step By Step Buat Unit Test**
 1. Buat application-test.properties
 
 2. file ini isinya konfigurasi buat testing, pake database H2 (in-memory database) biar nggak ganggu database utama (PostgreSQL). Ini isi filenya:
@@ -262,4 +262,53 @@ spring.h2.console.path=/h2-console
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     
 4. Nulis Unit Test
+
+package com.example.belajarRestApi.service;
+
+import com.example.belajarRestApi.model.User;
+import com.example.belajarRestApi.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class UserServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @InjectMocks
+    private UserService userService;
+
+    private User mockUser;
+
+    @BeforeEach
+    void setUp() {
+        mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setUsername("testuser");
+        mockUser.setPassword("password");
+        mockUser.setName("Test User");
+    }
+
+    // Test methods...
+}
+
    
