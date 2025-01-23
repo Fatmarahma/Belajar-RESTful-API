@@ -66,8 +66,9 @@ public class UserServiceTest {
 
     @Test
     void testRegisterUser() {
+        // Mock encode untuk mengembalikan password terenkripsi
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
-        when(userRepository.save(any(User.class))).thenReturn(mockUser);
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         User newUser = new User();
         newUser.setUsername("newuser");
@@ -76,11 +77,30 @@ public class UserServiceTest {
 
         User registeredUser = userService.registerUser(newUser);
 
+        // Verifikasi hasil
         assertNotNull(registeredUser);
-        assertEquals("encodedPassword", registeredUser.getPassword()); // Pastikan password sesuai yang di-encode
+        assertEquals("encodedPassword", registeredUser.getPassword()); // Pastikan password sesuai hasil encode
         verify(passwordEncoder, times(1)).encode("password");
         verify(userRepository, times(1)).save(any(User.class));
     }
+    @Test
+    void testEncodeAndSaveUser() {
+        when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        User newUser = new User();
+        newUser.setUsername("newuser");
+        newUser.setPassword("password");
+        newUser.setName("New User");
+
+        User savedUser = userService.encodeAndSaveUser(newUser);
+
+        assertNotNull(savedUser);
+        assertEquals("encodedPassword", savedUser.getPassword());
+        verify(passwordEncoder, times(1)).encode("password");
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
 
 
     @Test
